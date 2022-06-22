@@ -1,12 +1,13 @@
 import os
+from click import argument
 from dotenv import load_dotenv
 
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
-from forms import UserAddForm, LoginForm, MessageForm, CSRFProtectForm
-from models import db, connect_db, User, Message
+from forms import UserAddForm, LoginForm, MessageForm, CSRFProtectForm, UserEditForm
+from models import db, connect_db, User, Message, DEFAULT_HEADER_IMAGE_URL, DEFAULT_IMAGE_URL
 
 load_dotenv()
 
@@ -240,7 +241,40 @@ def stop_following(follow_id):
 def profile():
     """Update profile for current user."""
 
-    # IMPLEMENT THIS
+    # Check current user is logged in.
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    # form = UserEditForm(obj=g.user)
+    form = UserEditForm()
+
+
+    if form.validate_on_submit():
+        password = request.form.get('password')
+
+        # Check authorized Username/Password
+        if not User.authenticate(g.user.username,password):
+            flash("Access unauthorized.", "danger")
+            return redirect("/")
+
+        # breakpoint()
+        g.user.username = form.username.data or g.user.username
+        g.user.email = form.email.data or g.user.email
+        # TODO: We pass the user default image to the form. The defualt is not a valid URL.
+        g.user.image_url = form.image_url.data or DEFAULT_IMAGE_URL
+        g.user.header_image_url = form.header_image_url.data or DEFAULT_HEADER_IMAGE_URL
+        g.user.bio = form.bio.data
+
+        db.session.commit()
+
+        return redirect(f'/users/{g.user.id}')
+
+    return render_template('users/edit.html', form=form)
+
+
+
+
 
 
 @app.post('/users/delete')

@@ -1,0 +1,9 @@
+Bugs and Bug explanation!
+Logs and info:
+
+1.) Logout Route Bug
+a. Closed the form tag too early for our <form></form>.....</form>
+b. Created the g variable for a global context across files.
+c. Created a new CSRF form
+d. Added the CSRF form to our g variable.
+
