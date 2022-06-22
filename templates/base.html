@@ -48,6 +48,7 @@
       {% endblock %}
 
       {% if not g.user %}
+
         <li><a href="/signup">Sign up</a></li>
         <li><a href="/login">Log in</a></li>
       {% else %}
@@ -57,7 +58,10 @@
           </a>
         </li>
         <li><a href="/messages/new">New Message</a></li>
-        <li><a href="/logout">Log out</a></li>
+        <form action="/logout" method="POST">
+        {{g.csrf_form.hidden_tag()}}
+        <li><button type="submit">Log out</button></li> <!--TODO: style button-->
+      </form>
       {% endif %}
 
     </ul>
