@@ -192,16 +192,22 @@ nav + .container {
   display: inline-block;
 }
 
-.message-area,
 .liked {
   display: inline-block;
   position: relative;
-  z-index: 10;
+  z-index: 1;
+  /* float: right; */
 }
 
 .message-area {
   margin-left: 10px;
+  /* z-index: 0; */
 }
+
+/* .message-area a {
+  position: relative;
+  z-index: 2;
+}  */
 
 #warbler-hero {
   height: 360px;
