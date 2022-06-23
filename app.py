@@ -44,8 +44,8 @@ def add_user_to_g():
 
 
 @app.before_request
-def add_csfr_to_g():
-    """add CSFRProtection Form to Flask global"""
+def add_csrf_to_g():
+    """add CSRFProtection Form to Flask global"""
 
     g.csrf_form = CSRFProtectForm()
 
@@ -127,11 +127,12 @@ def login():
 def logout():
     """Handle logout of user and redirect to homepage."""
 
-    form = g.csrf_form
+    if CURR_USER_KEY in session:
+        form = g.csrf_form
 
-    if form.validate_on_submit():
-        do_logout()
-        flash("You've been logged out")
+        if form.validate_on_submit():
+            do_logout()
+            flash("You've been logged out")
 
 
     return redirect("/")
@@ -243,7 +244,7 @@ def profile():
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    form = UserEditForm()
+    form = UserEditForm(obj=g.user)
 
 
     if form.validate_on_submit():
@@ -252,7 +253,7 @@ def profile():
         # Check authorized Username/Password
         if not User.authenticate(g.user.username,password):
             flash("Access unauthorized.", "danger")
-            return redirect("/")
+            return redirect("/users/profile")
 
         g.user.username = form.username.data or g.user.username
         g.user.email = form.email.data or g.user.email
@@ -283,10 +284,14 @@ def delete_user():
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    do_logout()
+    if CURR_USER_KEY in session:
+        form = g.csrf_form
 
-    db.session.delete(g.user)
-    db.session.commit()
+        if form.validate_on_submit():
+            do_logout()
+
+            db.session.delete(g.user)
+            db.session.commit()
 
     return redirect("/signup")
 

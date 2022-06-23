@@ -10,3 +10,6 @@ d. Added the CSRF form to our g variable.
 2. edit user Route
 a. tried to use .get() returned empty string rather than falsey
 b. url photo
+
+
+TODO: add csrf protection where needed

@@ -24,10 +24,10 @@ class UserEditForm(FlaskForm):
     email = StringField('E-mail', validators=[Optional(), Email()])
     image_url = StringField(
                             '(Optional) Profile Image URL',
-                            validators=[Optional(),URL()])
+                            validators=[Optional()])
     header_image_url = StringField(
                                     '(Optional) Header Image URL',
-                                    validators=[Optional(),URL()])
+                                    validators=[Optional()])
     bio = TextAreaField('text', validators=[Optional()])
     password = PasswordField('Password', validators=[Length(min=6)])
 
