@@ -45,7 +45,7 @@ def add_user_to_g():
 
 @app.before_request
 def add_csfr_to_g():
-    """add CSFR Protection Form to Flask global"""
+    """add CSFRProtection Form to Flask global"""
 
     g.csrf_form = CSRFProtectForm()
 
@@ -129,9 +129,6 @@ def logout():
 
     form = g.csrf_form
 
-
-    # IMPLEMENT THIS AND FIX BUG
-    # DO NOT CHANGE METHOD ON ROUTE
     if form.validate_on_submit():
         do_logout()
         flash("You've been logged out")
@@ -246,7 +243,6 @@ def profile():
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    # form = UserEditForm(obj=g.user)
     form = UserEditForm()
 
 
@@ -258,12 +254,11 @@ def profile():
             flash("Access unauthorized.", "danger")
             return redirect("/")
 
-        # breakpoint()
         g.user.username = form.username.data or g.user.username
         g.user.email = form.email.data or g.user.email
-        # TODO: We pass the user default image to the form. The defualt is not a valid URL.
         g.user.image_url = form.image_url.data or DEFAULT_IMAGE_URL
-        g.user.header_image_url = form.header_image_url.data or DEFAULT_HEADER_IMAGE_URL
+        g.user.header_image_url = (form.header_image_url.data
+                                    or DEFAULT_HEADER_IMAGE_URL)
         g.user.bio = form.bio.data
 
         db.session.commit()
@@ -319,7 +314,7 @@ def add_message():
 
         return redirect(f"/users/{g.user.id}")
 
-    return render_template('messages/new.html', form=form)
+    return render_template('messages/create.html', form=form)
 
 
 @app.get('/messages/<int:message_id>')
@@ -366,11 +361,15 @@ def homepage():
     """
 
     if g.user:
+        following_and_own_ids = [f.id for f in g.user.following]
+        following_and_own_ids.append(g.user.id)
         messages = (Message
                     .query
+                    .filter(Message.user_id.in_(following_and_own_ids))
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
+
 
         return render_template('home.html', messages=messages)
 

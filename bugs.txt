@@ -7,3 +7,6 @@ b. Created the g variable for a global context across files.
 c. Created a new CSRF form
 d. Added the CSRF form to our g variable.
 
+2. edit user Route
+a. tried to use .get() returned empty string rather than falsey
+b. url photo
