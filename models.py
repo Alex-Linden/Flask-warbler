@@ -30,6 +30,23 @@ class Follows(db.Model):
     )
 
 
+class LikedMessage(db.Model):
+    """Connection of a user <-> liked_message."""
+
+    __tablename__ = 'likes'
+
+    message_being_liked_id = db.Column(
+        db.Integer,
+        db.ForeignKey('messages.id', ondelete="cascade"),
+        primary_key=True,
+    )
+
+    user_liking_message_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete="cascade"),
+        primary_key=True,
+    )
+
 class User(db.Model):
     """User in the system."""
 
@@ -84,13 +101,13 @@ class User(db.Model):
         secondaryjoin=(Follows.user_following_id == id),
         backref="following",
     )
-    #############################################################
+    #TODO: check on syntax may need help here
     liked_messages = db.relationship(
-        "LikedMessage",
+        "Message",
         secondary="likes",
         primaryjoin=(LikedMessage.message_being_liked_id == id),
         secondaryjoin=(LikedMessage.user_liking_message_id == id),
-        backref="",
+        backref="User", #TODO: is this right?
     )
 
     def __repr__(self):
@@ -150,22 +167,7 @@ class User(db.Model):
             user for user in self.following if user == other_user]
         return len(found_user_list) == 1
 
-class LikedMessage(db.Model):
-    """Connection of a user <-> liked_message."""
 
-    __tablename__ = 'likes'
-
-    message_being_liked_id = db.Column(
-        db.Integer,
-        db.ForeignKey('messages.id', ondelete="cascade"),
-        primary_key=True,
-    )
-
-    user_liking_message_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete="cascade"),
-        primary_key=True,
-    )
 
 
 class Message(db.Model):
