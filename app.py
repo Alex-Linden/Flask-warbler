@@ -7,7 +7,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, MessageForm, CSRFProtectForm, UserEditForm
-from models import db, connect_db, User, Message, DEFAULT_HEADER_IMAGE_URL, DEFAULT_IMAGE_URL
+from models import db, connect_db, User, Message, LikedMessage, DEFAULT_HEADER_IMAGE_URL, DEFAULT_IMAGE_URL
 
 load_dotenv()
 
@@ -325,12 +325,12 @@ def add_message():
 @app.get('/messages/<int:message_id>')
 def show_message(message_id):
     """Show a message."""
-
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
     msg = Message.query.get_or_404(message_id)
+    breakpoint()
     return render_template('messages/show.html', message=msg)
 
 
@@ -351,6 +351,46 @@ def delete_message(message_id):
     db.session.commit()
 
     return redirect(f"/users/{g.user.id}")
+
+
+##############################################################################
+#User Liked Message Routes
+
+@app.post('/messages/<int:msg_id>/like')
+def like_message(msg_id):
+    """Add a like for the currently selected message
+    by the currently logged in user.
+
+    Redirect to homepage.
+    """
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    liked_message = Message.query.get_or_404(msg_id)
+    g.user.liked_messages.append(liked_message)
+    db.session.commit()
+
+    return redirect(f"/")
+
+@app.post('/messages/<int:msg_id>/unlike')
+def unlike_message(msg_id):
+    """Have currently-logged-in-user remove like (unlike) from this message.
+
+    Redirect to homepage.
+    """
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    liked_message = Message.query.get_or_404(msg_id)
+    g.user.liked_messages.remove(liked_message)
+
+    db.session.commit()
+
+    return redirect("/")
 
 
 ##############################################################################

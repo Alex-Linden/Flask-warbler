@@ -101,13 +101,11 @@ class User(db.Model):
         secondaryjoin=(Follows.user_following_id == id),
         backref="following",
     )
-    #TODO: check on syntax may need help here
+
     liked_messages = db.relationship(
         "Message",
         secondary="likes",
-        primaryjoin=(LikedMessage.message_being_liked_id == id),
-        secondaryjoin=(LikedMessage.user_liking_message_id == id),
-        backref="User", #TODO: is this right?
+        backref="users_liking",
     )
 
     def __repr__(self):
@@ -196,7 +194,6 @@ class Message(db.Model):
         db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False,
     )
-
 
 def connect_db(app):
     """Connect this database to provided Flask app.
