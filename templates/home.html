@@ -52,14 +52,25 @@
             <a href="/users/{{ msg.user.id }}">
               <img src="{{ msg.user.image_url }}" alt="" class="timeline-image">
             </a>
+            {% if not msg in g.user.liked_messages %}
+            <!-- conditional logic if message.id in user.liked.messages -->
+            <form action="/messages/{{ msg.id }}/like" method="POST">
+              <button type="submit" class="liked"><i class="far fa-star"></i></button>
+            </form>
+            {% else %}
+            <form action="/messages/{{ msg.id }}/unlike" method="POST">
+              <!-- Change the fa far star button -->
+              <button type="submit" class="liked"><i class="fas fa-star"></i></button>
+            </form>
+            {% endif %}
+
+
             <div class="message-area">
               <a href="/users/{{ msg.user.id }}">@{{ msg.user.username }}</a>
               <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
               <p>{{ msg.text }}</p>
-              <form action="/messages/{{ msg.id }}/like" method="POST">
-                <button><i class="fa-light fa-user"></i></button>
-              </form>
             </div>
+
           </li>
         {% endfor %}
       </ul>

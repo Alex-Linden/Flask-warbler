@@ -330,7 +330,7 @@ def show_message(message_id):
         return redirect("/")
 
     msg = Message.query.get_or_404(message_id)
-    breakpoint()
+    # breakpoint()
     return render_template('messages/show.html', message=msg)
 
 

@@ -192,6 +192,13 @@ nav + .container {
   display: inline-block;
 }
 
+.message-area,
+.liked {
+  display: inline-block;
+  position: relative;
+  z-index: 10;
+}
+
 .message-area {
   margin-left: 10px;
 }
