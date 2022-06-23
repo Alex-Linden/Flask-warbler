@@ -203,7 +203,7 @@ def show_followers(user_id):
 def start_following(follow_id):
     """Add a follow for the currently-logged-in user.
 
-    Redirect to following page for the current for the current user.
+    Redirect to following page for the current user.
     """
 
     if not g.user:
