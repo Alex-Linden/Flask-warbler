@@ -1,5 +1,4 @@
 import os
-from click import argument
 from dotenv import load_dotenv
 
 from flask import Flask, render_template, request, flash, redirect, session, g

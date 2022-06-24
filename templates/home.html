@@ -47,23 +47,31 @@
       {% for msg in messages %}
       <li class="list-group-item">
         <a href="/messages/{{ msg.id }}" class="message-link">
-        <a href="/users/{{ msg.user.id }}">
-          <img src="{{ msg.user.image_url }}" alt="" class="timeline-image">
-        </a>
-        {% if not msg in g.user.liked_messages %}
-        <form action="/messages/{{ msg.id }}/like" method="POST" class="liked">
-          <button type="submit" class="btn bg-transparent"><i class="far fa-star"></i></button>
-        </form>
-        {% else %}
-        <form action="/messages/{{ msg.id }}/unlike" method="POST" class="liked">
-          <button type="submit" class="btn bg-transparent"><i class="fas fa-star"></i></button>
-        </form>
-        {% endif %}
-        <div class="message-area">
-          <a href="/users/{{ msg.user.id }}">@{{ msg.user.username }}</a>
-          <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
-          <p>{{ msg.text }}</p>
-        </div>
+          <a href="/users/{{ msg.user.id }}">
+            <img src="{{ msg.user.image_url }}" alt="" class="timeline-image">
+          </a>
+          {% if msg.user == g.user %}
+          <button type="button" class="btn bg-transparent liked">
+            <i class="far fa-star"></i>
+          </button>
+          {% elif not msg in g.user.liked_messages %}
+          <form action="/messages/{{ msg.id }}/like" method="POST" class="liked">
+            <button type="submit" class="btn bg-transparent">
+              <i class="far fa-star"></i>
+            </button>
+          </form>
+          {% else %}
+          <form action="/messages/{{ msg.id }}/unlike" method="POST" class="liked">
+            <button type="submit" class="btn bg-transparent">
+              <i class="fas fa-star"></i>
+            </button>
+          </form>
+          {% endif %}
+          <div class="message-area">
+            <a href="/users/{{ msg.user.id }}">@{{ msg.user.username }}</a>
+            <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
+            <p>{{ msg.text }}</p>
+          </div>
       </li>
       {% endfor %}
     </ul>
