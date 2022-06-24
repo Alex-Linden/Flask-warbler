@@ -195,6 +195,7 @@ class Message(db.Model):
         nullable=False,
     )
 
+
 def connect_db(app):
     """Connect this database to provided Flask app.
 
