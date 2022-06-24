@@ -3,6 +3,7 @@
 # run these tests like:
 #
 #    python -m unittest test_user_model.py
+#    FLASK_ENV=production python -m unittest test_user_model.py
 
 
 import os
@@ -88,11 +89,11 @@ class UserModelTestCase(TestCase):
         u1 = User.query.get(self.u1_id)
 
         self.assertEqual(User.authenticate(u1.username, "password"), u1)
+        self.assertEqual(User.authenticate(u1.username, "Wrong_password"), False)
+        self.assertEqual(User.authenticate("Wrong_Username", "password"), False)
 
 
 
-
-#User.signup(username="u1", email="u1@email.com", password="password", image_url=None),
 
 
 
