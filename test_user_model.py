@@ -7,7 +7,7 @@
 
 import os
 from unittest import TestCase
-
+from sqlalchemy.exc import IntegrityError
 from models import db, User, Message, Follows
 
 # BEFORE we import our app, let's set an environmental variable
@@ -76,11 +76,23 @@ class UserModelTestCase(TestCase):
         self.assertEqual(u1.is_followed_by(u2),False)
         self.assertEqual(u2.is_followed_by(u1),True)
 
+    def test_user_model_signup_fail(self):
+        User.signup("u1", "u1@email.com", "password", None)
+
+        self.assertRaises(
+            IntegrityError,
+            lambda: db.session.commit()
+        )
+
+    def test_user_model_authenticate(self):
+        u1 = User.query.get(self.u1_id)
+
+        self.assertEqual(User.authenticate(u1.username, "password"), u1)
 
 
 
 
-
+#User.signup(username="u1", email="u1@email.com", password="password", image_url=None),
 
 
 
