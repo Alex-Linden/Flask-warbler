@@ -198,6 +198,19 @@ def show_followers(user_id):
     user = User.query.get_or_404(user_id)
     return render_template('users/followers.html', user=user)
 
+#############################################################
+## New code show liked messages
+@app.get('/users/<int:user_id>/likes')
+def show_liked_messages(user_id):
+    """Show list of this user's liked messages."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    user = User.query.get_or_404(user_id)
+    return render_template('users/liked-messages.html', user=user)
+
 
 @app.post('/users/follow/<int:follow_id>')
 def start_following(follow_id):
@@ -369,8 +382,9 @@ def like_message(msg_id):
         return redirect("/")
 
     liked_message = Message.query.get_or_404(msg_id)
-    g.user.liked_messages.append(liked_message)
-    db.session.commit()
+    if not liked_message.user_id == g.user.id:
+        g.user.liked_messages.append(liked_message)
+        db.session.commit()
 
     return redirect(f"/")
 
@@ -386,9 +400,10 @@ def unlike_message(msg_id):
         return redirect("/")
 
     liked_message = Message.query.get_or_404(msg_id)
-    g.user.liked_messages.remove(liked_message)
+    if not liked_message.user_id == g.user.id:
+        g.user.liked_messages.remove(liked_message)
 
-    db.session.commit()
+        db.session.commit()
 
     return redirect("/")
 

@@ -3,14 +3,11 @@
 {% block content %}
 
 <div class="full-width">
-     <!-- moved id="warbler-hero" from div to img -->
-     <img src="{{ user.header_image_url  }}"
-     alt="Header Image for {{ user.username }}"
-     id="warbler-hero" class="full-width">
+  <!-- moved id="warbler-hero" from div to img -->
+  <img src="{{ user.header_image_url  }}" alt="Header Image for {{ user.username }}" id="warbler-hero"
+    class="full-width">
 </div>
-<img src="{{ user.image_url }}"
-     alt="Image for {{ user.username }}"
-     id="profile-avatar">
+<img src="{{ user.image_url }}" alt="Image for {{ user.username }}" id="profile-avatar">
 <div class="row full-width">
   <div class="container" style="max-width: 1300px;">
     <div class="row justify-content-end">
@@ -46,7 +43,11 @@
           </li>
           <li class="stat">
             <p class="small">Likes</p>
-            <h4>TBD</h4>
+            <h4>
+              <a href="/users/{{ user.id }}/likes">
+                {{ user.liked_messages | length }}
+              </a>
+            </h4>
           </li>
 
           <li class="ms-auto">
@@ -61,8 +62,7 @@
             </form>
             {% elif g.user %}
             {% if g.user.is_following(user) %}
-            <form method="POST"
-                  action="/users/stop-following/{{ user.id }}">
+            <form method="POST" action="/users/stop-following/{{ user.id }}">
               <button class="btn btn-primary">Unfollow</button>
             </form>
             {% else %}
@@ -83,10 +83,10 @@
 <div class="row">
   <div class="col-sm-3">
     <h4 id="sidebar-username">@{{ user.username }}</h4>
-    <p>{{user.bio}}</p> <!--TODO: load in bio-->
+    <p>{{user.bio}}</p>
     <p class="user-location">
       <span class="fa fa-map-marker"></span>
-      {{user.location}} <!--TODO: load in lacation-->
+      {{user.location}}
     </p>
   </div>
 

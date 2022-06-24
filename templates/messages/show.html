@@ -13,7 +13,17 @@
                alt=""
                class="timeline-image">
         </a>
-
+        {% if not message in g.user.liked_messages %}
+        <!-- conditional logic if message.id in user.liked.messages -->
+        <form action="/messages/{{ message.id }}/like" method="POST">
+          <button type="submit" class="btn bg-transparent liked"><i class="far fa-star"></i></button>
+        </form>
+        {% else %}
+        <form action="/messages/{{ message.id }}/unlike" method="POST">
+          <!-- Change the fa far star button -->
+          <button type="submit" class="btn bg-transparent liked"><i class="fas fa-star"></i></button>
+        </form>
+        {% endif %}
         <div class="message-area">
           <div class="message-heading">
             <a href="/users/{{ message.user.id }}">
