@@ -9,19 +9,23 @@
       <li class="list-group-item">
 
         <a href="{{ url_for('show_user', user_id=message.user.id) }}">
-          <img src="{{ message.user.image_url }}"
-               alt=""
-               class="timeline-image">
+          <img src="{{ message.user.image_url }}" alt="" class="timeline-image">
         </a>
-        {% if not message in g.user.liked_messages %}
-        <!-- conditional logic if message.id in user.liked.messages -->
-        <form action="/messages/{{ message.id }}/like" method="POST">
-          <button type="submit" class="btn bg-transparent liked"><i class="far fa-star"></i></button>
+        {% if message.user == g.user %}
+        <button type="button" class="btn bg-transparent liked">
+          <i class="far fa-star"></i>
+        </button>
+        {% elif not message in g.user.liked_messages %}
+        <form action="/messages/{{ message.id }}/like" method="POST" class="liked">
+          <button type="submit" class="btn bg-transparent">
+            <i class="far fa-star"></i>
+          </button>
         </form>
         {% else %}
-        <form action="/messages/{{ message.id }}/unlike" method="POST">
-          <!-- Change the fa far star button -->
-          <button type="submit" class="btn bg-transparent liked"><i class="fas fa-star"></i></button>
+        <form action="/messages/{{ message.id }}/unlike" method="POST" class="liked">
+          <button type="submit" class="btn bg-transparent">
+            <i class="fas fa-star"></i>
+          </button>
         </form>
         {% endif %}
         <div class="message-area">
@@ -32,18 +36,15 @@
 
             {% if g.user %}
             {% if g.user.id == message.user.id %}
-            <form method="POST"
-                  action="/messages/{{ message.id }}/delete">
+            <form method="POST" action="/messages/{{ message.id }}/delete">
               <button class="btn btn-outline-danger">Delete</button>
             </form>
             {% elif g.user.is_following(message.user) %}
-            <form method="POST"
-                  action="/users/stop-following/{{ message.user.id }}">
+            <form method="POST" action="/users/stop-following/{{ message.user.id }}">
               <button class="btn btn-primary">Unfollow</button>
             </form>
             {% else %}
-            <form method="POST"
-                  action="/users/follow/{{ message.user.id }}">
+            <form method="POST" action="/users/follow/{{ message.user.id }}">
               <button class="btn btn-outline-primary btn-sm">
                 Follow
               </button>
@@ -53,8 +54,8 @@
           </div>
           <p class="single-message">{{ message.text }}</p>
           <span class="text-muted">
-              {{ message.timestamp.strftime('%d %B %Y') }}
-            </span>
+            {{ message.timestamp.strftime('%d %B %Y') }}
+          </span>
         </div>
       </li>
     </ul>
